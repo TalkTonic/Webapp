@@ -11,10 +11,10 @@
 				<a href="#!" class="brand-logo">Logo</a>
 				<ul class="right hide-on-med-and-down">
 					<li>          
-						<input placeholder="Username" id="username" type="text" class="validate">
+						<input placeholder="Username" id="login_username" type="text" class="validate">
 					</li>
 					<li>          
-						<input placeholder="Password" id="password" type="text" class="validate">
+						<input placeholder="Password" id="login_password" type="text" class="validate">
 					</li>
 					<li>          
 						<a id="submit" class="waves-effect waves-light btn">Stuff</a>
@@ -26,31 +26,22 @@
 			<div id="info" class="col s7">
 				<h1>Sometimes all you need is a friend</h1>
 			</div>
-			<div id="register" class="col s5">
+			<div id="register_section" class="col s5">
 				<div class="row">
 					<form class="col s12">
 						<div class="row">
-							<div class="input-field col s6">
-								<input placeholder="Placeholder" id="first_name" type="text" class="validate">
-								<label for="first_name">First Name</label>
-							</div>
-							<div class="input-field col s6">
-								<input id="last_name" type="text" class="validate">
-								<label for="last_name">Last Name</label>
+							<div class="input-field col s12">
+								<input id="register_username" type="email" class="validate">
+								<label for="register_username">Username</label>
 							</div>
 						</div>
 						<div class="row">
 							<div class="input-field col s12">
-								<input id="password" type="password" class="validate">
-								<label for="password">Password</label>
+								<input id="register_password" type="password" class="validate">
+								<label for="register_password">Password</label>
 							</div>
 						</div>
-						<div class="row">
-							<div class="input-field col s12">
-								<input id="email" type="email" class="validate">
-								<label for="email">Email</label>
-							</div>
-						</div>
+						<a id="register" class="waves-effect waves-light btn">Register</a>
 					</form>
 				</div>
 			</div>
@@ -59,11 +50,26 @@
 			var bodyHeight = window.innerHeight;
 			$('#parent').height(bodyHeight - ($('#parent').position().top));
 			
-			$('#submit').click(function() {
-				var username = $('#username').val();
-				var password = $('#password').val();
+			$('#register').click(function() {
+				var username = $('#register_username').val();
+				var password = $('#register_password').val();
 				$.post(
-					"http://localhost:8080/conversation",
+					"/register",
+					{
+						"user" : username, 
+						"pass" : password
+					},	
+					function( data ) {
+						$( ".result" ).html( data );
+					}
+				);
+			});
+
+			$('#submit').click(function() {
+				var username = $('#login_username').val();
+				var password = $('#login_password').val();
+				$.post(
+					"/conversation",
 					{
 						"user" : username, 
 						"pass" : password
