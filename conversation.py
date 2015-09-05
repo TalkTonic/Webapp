@@ -160,13 +160,9 @@ class returnConvo(webapp2.RequestHandler): #returns the messages of the conversa
         thread = []
 
         for message in convo_object.messages:
+            thread.append({"sender": message.sender, "message": message.message})
 
-            thread.append(tuple())
-
-
-
-     
-
+        self.response.write(json.dumps(thread))
 
 class ConvoCreate(webapp2.RequestHandler):
     def post(self):
@@ -205,6 +201,7 @@ class API(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/conversation', ConvoHandler),
+    ('/thread', returnConvo),
     ('/register', Register),
     ('/create', ConvoCreate),
     ('/data', dummyData),
