@@ -12,7 +12,7 @@ class Conversation(ndb.Model):
     messages = ndb.StructuredProperty(Message,repeated=True)
     user1 = ndb.StringProperty()
     user2 = ndb.StringProperty()
-    nummessages = ndb.IntegerProperty()
+    num_messages = ndb.IntegerProperty()
 
 
 class User(ndb.Model):
@@ -23,10 +23,7 @@ class User(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add=True)
     interests = ndb.StringProperty(repeated=True)
 
-
 #def get_user(user):
-
-
 
 
 def create_user(username, password):
@@ -50,7 +47,7 @@ class Register(webapp2.RequestHandler):
             self.response.status = 202
 
 
-class ConvoHandler(webapp2.RequestHandler): #returns user data
+class ConvoHandler(webapp2.RequestHandler): #returns user data upon login
     def post(self):
         self.response.headers['Content-Type'] = 'application/json'
 
@@ -58,7 +55,12 @@ class ConvoHandler(webapp2.RequestHandler): #returns user data
         password = self.request.get("pass")
         user = User.query(User.username == username).fetch()
 
-        if user: 
+
+        if user:
+            if(password != user.password):
+                self.response.write("wrong password")
+                return
+
             convodict = {}
             convodict['conversations'] = []
 
@@ -87,6 +89,17 @@ class ConvoHandler(webapp2.RequestHandler): #returns user data
 
 class ConvoCreate(webapp2.RequestHandler):
     def post(self):
+        user1 = self.request.get("user")
+        user2= "testconverser" #change this
+
+        newconvo = Conversation("user1"=user1, "user2"=user2, num_messages=0)
+
+        user1 = User.query(User.username == user1).fetch()
+        user2 = User.query(User.username == user2).fetch()
+
+        user1.conversations.append(newconvo.key) #now add the conversation to the 
+        user2.conversations.append(newconvo.key) #conversation list
+
         
 
 
