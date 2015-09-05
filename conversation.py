@@ -19,7 +19,7 @@ class User(ndb.Model):
     """Models an individual Guestbook entry with content and date."""
     username = ndb.StringProperty(required=True)
     password = ndb.StringProperty(required=True)
-    conversations = ndb.KeyProperty(repeated=True, kind=Conversation)
+    conversations = ndb.StringProperty(repeated=True)
     date = ndb.DateTimeProperty(auto_now_add=True)
     interests = ndb.StringProperty(repeated=True)
 
@@ -99,10 +99,30 @@ class dummyData(webapp2.RequestHandler):
             message = Message(sender="matt", receiver="swag", message=str(i))
             newconvo.messages.append(message)
 
-        user1.conversations.append(newconvo.key)
-        user2.conversations.append(newconvo.key)
+        idkey = newconvo.put()
+        idkey = idkey.urlsafe()
 
-        newconvo.put()
+        put1 = False
+        put2 = False
+
+        if(user1.conversations!=None):
+            user1.conversations.append(idkey)
+            put1= True
+
+        if(user2.conversations!=None):
+            user2.conversations.append(idkey)
+            put2=True
+
+        if not put1:
+            user1.conversations = [idkey]
+
+        if not put2:
+            user2.conversations = [idkey]
+
+        user1.put()
+        user2.put()
+
+     
 
 
 class ConvoCreate(webapp2.RequestHandler):
@@ -135,7 +155,9 @@ class API(webapp2.RequestHandler):
 
             count = count + 1
 
-        self.response.out.write(convodict)
+        self.response.out.write(json.dumps(convodict))
+        self.response.status = 202
+
 
 
 app = webapp2.WSGIApplication([
