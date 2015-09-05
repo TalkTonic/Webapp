@@ -2,6 +2,7 @@ var username = "";
 var password = "";
 var conversationList;
 var conversationCount = 0;
+var currentConvo = "";
 
 var bodyHeight = window.innerHeight;
 $('#parent').height(bodyHeight - ($('#parent').position().top));
@@ -73,6 +74,8 @@ function showChat(data) {
 	});
 
 	$('.convo-button').click(function() {
+		 currentConvo = this.id;
+		 console.log(currentConvo);
 		 clearPane();
 		 $("#pane").append(
 				$('<div>')
@@ -102,7 +105,7 @@ function showChat(data) {
 			url: "/thread",
 			type: "POST", 
 			data: {
-				"convoid": "ahlkZXZ-am92aWFsLW1lcmlkaWFuLTk0NTE5chkLEgxDb252ZXJzYXRpb24YgICAgICAhAgM"
+				"convoid": currentConvo
 			},
 			success: function(data){
 				if (conversationCount < data.length) {
