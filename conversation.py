@@ -45,6 +45,9 @@ class Register(webapp2.RequestHandler):
         else:
             user = User(username=username, password=password)
             user.put()
+
+            self.response.write(json.dumps({"conversations": []}))
+
             self.response.status = 202
 
 
@@ -148,13 +151,27 @@ class dummyData(webapp2.RequestHandler):
         user1.put()
         user2.put()
 
+class returnConvo(webapp2.RequestHandler): #returns the messages of the conversation
+    def post(self):
+        convoid= self.request.get("convoid")
+        convo_key = ndb.Key(urlsafe=convoid)
+        convo_object = convo_key.get()
+
+        thread = []
+
+        for message in convo_object.messages:
+
+            thread.append(tuple())
+
+
+
      
 
 
 class ConvoCreate(webapp2.RequestHandler):
     def post(self):
         user1 = self.request.get("user")
-        user2= "testconverser" #change this
+        user2= self.request.get("user2") #change this
 
         newconvo = Conversation(user1=user1, user2=user2, num_messages=0)
 
