@@ -32,6 +32,7 @@ def create_user(username, password):
 
 
 
+
 class Register(webapp2.RequestHandler):
     def post(self):
         username = self.request.get("user")
@@ -53,10 +54,13 @@ class ConvoHandler(webapp2.RequestHandler): #returns user data upon login
 
         username = self.request.get("user")
         password = self.request.get("pass")
-        user = User.query(User.username == username).fetch()[0]
+        user = User.query(User.username == username).fetch()
+
+
 
 
         if user:
+            user = user[0]
             if(password != user.password):
                 self.response.write("wrong password")
                 return
@@ -86,6 +90,24 @@ class ConvoHandler(webapp2.RequestHandler): #returns user data upon login
         else: #if user is not found
             self.response.status = 403
 
+
+
+# class openConversation(webapp2.RequestHandler):
+#     convos = Conversation.query().fetch()
+#     convodict = {}
+#     count = 9999
+
+#     for convo in convos:
+#         convodict[count] = []
+
+#         for message in convo.messages:
+#             mess = {"sender": message.sender, "message": message.message}
+
+#             convodict[count].append(mess)
+
+#         count = count + 1
+
+#     self.response.out.write(json.dumps(convodict))
 
 class dummyData(webapp2.RequestHandler):
     def get(self):
