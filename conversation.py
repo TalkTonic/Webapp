@@ -23,6 +23,10 @@ class User(ndb.Model):
     date = ndb.DateTimeProperty(auto_now_add=True)
     interests = ndb.StringProperty(repeated=True)
 
+#class Chatters(ndb.Model):
+
+
+
 #def get_user(user):
 
 
@@ -58,10 +62,6 @@ class ConvoHandler(webapp2.RequestHandler): #returns user data upon login
         username = self.request.get("user")
         password = self.request.get("pass")
         user = User.query(User.username == username).fetch()
-
-
-
-
         if user:
             user = user[0]
             if(password != user.password):
@@ -86,9 +86,9 @@ class ConvoHandler(webapp2.RequestHandler): #returns user data upon login
                 convoid = {"person": otherperson, "conversation": convo}
                 convodict['conversations'].append(convoid)
 
+            self.response.status = 202
 
             self.response.write(json.dumps(convodict))
-            self.response.status = 202
 
         else: #if user is not found
             self.response.status = 403
@@ -177,12 +177,16 @@ class ConvoCreate(webapp2.RequestHandler):
         user1.conversations.append(newconvo.key) #now add the conversation to the 
         user2.conversations.append(newconvo.key) #conversation list
 
+# class sendMessage(webapp2.RequestHandler):
+#     def post(self):
+
+
 
 class API(webapp2.RequestHandler):
     def get(self):
         convos = Conversation.query().fetch()
         convodict = {}
-        count = 9999
+        count = 0
 
         for convo in convos:
             convodict[count] = []
