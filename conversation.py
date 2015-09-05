@@ -50,44 +50,48 @@ class Register(webapp2.RequestHandler):
             self.response.status = 202
 
 
-# class ConvoHandler(webapp2.RequestHandler): #returns user data
-#     def post(self):
-#         self.response.headers['Content-Type'] = 'application/json'
+class ConvoHandler(webapp2.RequestHandler): #returns user data
+    def post(self):
+        self.response.headers['Content-Type'] = 'application/json'
 
-#         username = self.request.get("user")
-#         password = self.request.get("pass")
-#         user = User.query(User.username == username).fetch()
+        username = self.request.get("user")
+        password = self.request.get("pass")
+        user = User.query(User.username == username).fetch()
 
-#         if user: 
-#             convodict = {}
-#             convodict['conversations'] = []
+        if user: 
+            convodict = {}
+            convodict['conversations'] = []
 
-#             conversations = user.conversations
+            conversations = user.conversations
 
-#             for convo in conversations:
-#                 if convo.user1 == user.username:
-#                     otherperson = convo.user2
-#                 else:
-#                     otherperson = convo.user1
+            for convo in conversations:
 
-#                 #convoid = {"person": "otherperson", "conversation": convo.}
+                convo_object = convo.get() #get the conversation object from the key
+                urlkey = convo.urlsafe() #get the urlsafe key for later reconstruction
 
-#                 self.response.write(convo.key
-
-
+                if convo_object.user1 == user.username:
+                    otherperson = convo.user2
+                else:
+                    otherperson = convo.user1
 
 
+                convoid = {"person": otherperson, "conversation": urlkey}
+                convodict['conversations'].append(convoid)
 
 
+            self.response.write(json.dumps(convodict))
+            self.response.status = 202
 
-#             self.response.write(str(user))
-#             self.response.status = 202
+        else: #if user is not found
+            self.response.status = 403
 
-#         else: #if user is not found
-#             self.response.status = 403
+class ConvoCreate(webapp2.RequestHandler):
+    def post(self):
+        
 
 
 app = webapp2.WSGIApplication([
- #   ('/conversation', ConvoHandler),
-    ('/register', Register)
+    ('/conversation', ConvoHandler),
+    ('/register', Register),
+    ('/create', ConvoCreate)
 ], debug=True)
