@@ -13,6 +13,7 @@ class Conversation(ndb.Model):
     user1 = ndb.StringProperty()
     user2 = ndb.StringProperty()
     num_messages = ndb.IntegerProperty()
+    commoninterests = ndb.StringProperty()
 
 
 class User(ndb.Model):
@@ -22,6 +23,11 @@ class User(ndb.Model):
     conversations = ndb.StringProperty(repeated=True)
     date = ndb.DateTimeProperty(auto_now_add=True)
     interests = ndb.StringProperty(repeated=True)
+
+
+class Queued(ndb.Model):
+    waitingusers = ndb.StringProperty(required=True)
+
 
 
 class Register(webapp2.RequestHandler):
@@ -141,11 +147,14 @@ class dummyData(webapp2.RequestHandler):
 
 class returnConvo(webapp2.RequestHandler): #returns the messages of the conversation
     def post(self):
+
         convoid= self.request.get("convoid")
         convo_key = ndb.Key(urlsafe=convoid)
         convo_object = convo_key.get()
 
         thread = []
+
+        thread.append({"interests": convo_object.interests})
 
         for message in convo_object.messages:
             thread.append({"sender": message.sender, "message": message.message})
@@ -154,13 +163,16 @@ class returnConvo(webapp2.RequestHandler): #returns the messages of the conversa
 
 class ConvoCreate(webapp2.RequestHandler):
     def post(self):
-        user1 = self.request.get("user")
-        user2= self.request.get("user2") #change this
+        username1 = self.request.get("user1")
+        username2= self.request.get("user2") #change this
 
-        newconvo = Conversation(user1=user1, user2=user2, num_messages=0)
 
-        user1 = User.query(User.username == user1).fetch()
-        user2 = User.query(User.username == user2).fetch()
+        user1 = User.query(User.username == user1).fetch()[0]
+        user2 = User.query(User.username == user2).fetch()[0]
+
+
+
+        newconvo = Conversation(user1=username1, user2=username2, num_messages=0)
 
         user1.conversations.append(newconvo.key) #now add the conversation to the 
         user2.conversations.append(newconvo.key) #conversation list
@@ -182,7 +194,8 @@ class sendMessage(webapp2.RequestHandler):
         else:
             convo_object.messages.append(newmessage)
 
-            
+        convo_object.put()
+
 
 
 class API(webapp2.RequestHandler):
@@ -204,13 +217,18 @@ class API(webapp2.RequestHandler):
         self.response.out.write(json.dumps(convodict))
         self.response.status = 202
 
+class Match(webapp2.RequestHandler):
+    def get(self):
+        self.response.write("hey")
 
 
 app = webapp2.WSGIApplication([
     ('/conversation', ConvoHandler),
     ('/thread', returnConvo),
+    ('/send', sendMessage),
     ('/register', Register),
     ('/create', ConvoCreate),
     ('/data', dummyData),
-    ('/api', API)
+    ('/api', API),
+    ('/matchpeople', Match)
 ], debug=True)
