@@ -33,12 +33,6 @@ def create_user(username, password):
 
 
 class Register(webapp2.RequestHandler):
-    def get(self):
-        #username = self.request.get("user")
-        #password = self.request.get("pass")
-        user = User(username="matt", password="lee",conversations=["conv1","conv2"])
-        user.put()
-
     def post(self):
         username = self.request.get("user")
         password = self.request.get("pass")
@@ -46,7 +40,7 @@ class Register(webapp2.RequestHandler):
         user = User.query(User.username == username).fetch()
 
         if user:
-            self.response.write("User Already Exists")
+            self.response.status = 400
         else:
             user = User(username=username, password=password)
             user.put()
