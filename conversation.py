@@ -53,7 +53,7 @@ class ConvoHandler(webapp2.RequestHandler): #returns user data upon login
 
         username = self.request.get("user")
         password = self.request.get("pass")
-        user = User.query(User.username == username).fetch()
+        user = User.query(User.username == username).fetch()[0]
 
 
         if user:
@@ -67,17 +67,16 @@ class ConvoHandler(webapp2.RequestHandler): #returns user data upon login
             conversations = user.conversations
 
             for convo in conversations:
-
-                convo_object = convo.get() #get the conversation object from the key
-                urlkey = convo.urlsafe() #get the urlsafe key for later reconstruction
+                convo_key = ndb.Key(urlsafe=convo)
+                convo_object = convo_key.get()
 
                 if convo_object.user1 == user.username:
-                    otherperson = convo.user2
+                    otherperson = convo_object.user2
                 else:
-                    otherperson = convo.user1
+                    otherperson = convo_object.user1
 
 
-                convoid = {"person": otherperson, "conversation": urlkey}
+                convoid = {"person": otherperson, "conversation": convo}
                 convodict['conversations'].append(convoid)
 
 
@@ -95,9 +94,14 @@ class dummyData(webapp2.RequestHandler):
         user1 = User.query(User.username == "matt").fetch()[0]
         user2 = User.query(User.username == "swag").fetch()[0]
 
-        for i in range(0,100):
-            message = Message(sender="matt", receiver="swag", message=str(i))
-            newconvo.messages.append(message)
+        for i in range(0, 150):
+            if(i % 2 == 0):
+                message = Message(sender="matt", receiver="swag", message=str(i))
+                newconvo.messages.append(message)
+
+            else:
+                message = Message(sender="swag", receiver="matt", message=str(i))
+                newconvo.messages.append(message)
 
         idkey = newconvo.put()
         idkey = idkey.urlsafe()
@@ -143,7 +147,7 @@ class API(webapp2.RequestHandler):
     def get(self):
         convos = Conversation.query().fetch()
         convodict = {}
-        count = 0
+        count = 9999
 
         for convo in convos:
             convodict[count] = []
