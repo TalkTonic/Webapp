@@ -41,6 +41,12 @@
 								<label for="register_password">Password</label>
 							</div>
 						</div>
+						<div class="row">
+							<div class="input-field col s12">
+								<input id="confirm_register_password" type="password" class="validate">
+								<label for="confirm_register_password">Confirm Password</label>
+							</div>
+						</div>
 						<a id="register" class="waves-effect waves-light btn">Register</a>
 					</form>
 				</div>
@@ -53,32 +59,48 @@
 			$('#register').click(function() {
 				var username = $('#register_username').val();
 				var password = $('#register_password').val();
-				$.post(
-					"/register",
-					{
-						"user" : username, 
-						"pass" : password
-					},	
-					function( data ) {
-						$( ".result" ).html( data );
+				$.ajax({
+					type: "POST", 
+					url: "/register", 
+					data: {
+							'user': username,
+							'pass': password
+					},
+					statusCode: {
+						202: function() {
+							showChat();
+						}, 
+						400: function() {
+							alert("No");
+						}
 					}
-				);
+				});
+
 			});
 
 			$('#submit').click(function() {
 				var username = $('#login_username').val();
 				var password = $('#login_password').val();
-				$.post(
-					"/conversation",
-					{
-						"user" : username, 
-						"pass" : password
-					},	
-					function( data ) {
-						$( ".result" ).html( data );
+				$.ajax({
+					type: "POST", 
+					url: "/conversation", 
+					data: {
+							'user': username,
+							'pass': password
+					},
+					statusCode: {
+						202: function() {
+							showChat();
+						}, 
+						403: function() {
+							alert("No");
+						}
 					}
-				);
+				});
 			});
+			function showChat() {
+				$('body').empty()
+			}
 		</script>
 	</body>
 </html>
