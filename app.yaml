@@ -10,5 +10,11 @@ handlers:
 - url: /
   static_files: index.html
   upload: index.html
+- url: /styles.css
+  static_files: styles.css
+  upload: styles.css
+- url: /chat.js
+  static_files: chat.js
+  upload: chat.js
 - url: /(.*)
   script: conversation.app

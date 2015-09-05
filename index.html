@@ -4,6 +4,8 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css">
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
+		<link rel="stylesheet" href="/styles.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	</head>
 	<body>
 		<nav>
@@ -52,55 +54,6 @@
 				</div>
 			</div>
 		</div>
-		<script>
-			var bodyHeight = window.innerHeight;
-			$('#parent').height(bodyHeight - ($('#parent').position().top));
-			
-			$('#register').click(function() {
-				var username = $('#register_username').val();
-				var password = $('#register_password').val();
-				$.ajax({
-					type: "POST", 
-					url: "/register", 
-					data: {
-							'user': username,
-							'pass': password
-					},
-					statusCode: {
-						202: function() {
-							showChat();
-						}, 
-						400: function() {
-							alert("No");
-						}
-					}
-				});
-
-			});
-
-			$('#submit').click(function() {
-				var username = $('#login_username').val();
-				var password = $('#login_password').val();
-				$.ajax({
-					type: "POST", 
-					url: "/conversation", 
-					data: {
-							'user': username,
-							'pass': password
-					},
-					statusCode: {
-						202: function() {
-							showChat();
-						}, 
-						403: function() {
-							alert("No");
-						}
-					}
-				});
-			});
-			function showChat() {
-				$('body').empty();
-			}
-		</script>
+		<script src="chat.js"></script>
 	</body>
 </html>
