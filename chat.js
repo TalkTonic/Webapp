@@ -1,6 +1,7 @@
 var username = "";
 var password = "";
 var conversationList;
+var conversationCount = 0;
 
 var bodyHeight = window.innerHeight;
 $('#parent').height(bodyHeight - ($('#parent').position().top));
@@ -49,12 +50,9 @@ $('#submit').click(function() {
 });
 
 function showChat(data) {
-	console.log(data.conversations.length);
 	$('body').empty();
 	$('body').append(
-		$('<div>').attr('class', 'row').append(
-			$('<div>').attr('class', 'col s12 fullscreen').attr('id', 'pane')
-		)
+		$('<div>').attr('class', 'col s12 fullscreen').attr('id', 'pane')
 	);
 	$(".fullscreen").height(window.innerHeight);
 	$("body").append('' +
@@ -65,15 +63,57 @@ function showChat(data) {
 		'</div>');
 
 	for(var i = 0; i < data.conversations.length; i++) {
-		$("#chat_area").append('<li><a id="chat-button" class="btn-floating blue">'+data.conversations[i].person.substring(0, 2).toUpperCase()+'</a></li>');
+		$("#chat_area").append('<li id="'+data.conversations[i].conversation+'" class="convo-button"><a class="btn-floating blue">'+data.conversations[i].person.substring(0, 2).toUpperCase()+'</a></li>');
 	}
 	
-		$("#chat_area").append('<li><a id="chat-button" class="btn-floating blue">+</a></li>');
-
+	$("#chat_area").append('<li><a id="chat-button" class="btn-floating blue">+</a></li>');
 
 	$("#chat-button").click(function() { 
 		showNewConvo();
 	});
+
+	$('.convo-button').click(function() {
+		 clearPane();
+		 $("#pane").append(
+				$('<div>')
+					.attr('id', 'messageArea')
+					.height(window.innerHeight*0.9)
+					.css('overflow', 'scroll')
+		);
+		$("#pane").append(
+				$('<div>')
+					.attr('id', 'textArea')
+					.height(window.innerHeight*0.1)
+		);
+		$("#textArea").append(''+
+'  <div class="row"> ' +
+'    <form class="col s12"> ' +
+'      <div class="row"> ' +
+'        <div class="input-field col s12"> ' +
+'          <textarea id="textarea1" class="materialize-textarea"></textarea> ' +
+'          <label for="textarea1">Press Enter to send</label> ' +
+'        </div> ' +
+'      </div> ' +
+'    </form> ' +
+'  </div> '
+		);
+	setInterval(function(){
+		$.ajax({
+			url: "/thread",
+			type: "POST", 
+			data: {
+				"convoid": "ahlkZXZ-am92aWFsLW1lcmlkaWFuLTk0NTE5chkLEgxDb252ZXJzYXRpb24YgICAgICAhAgM"
+			},
+			success: function(data){
+				if (conversationCount < data.length) {
+					update(data);
+				}
+			},
+			dataType: "json"});
+	}, 500);
+	});
+
+
 }
 
 function showNewConvo() {
@@ -90,6 +130,53 @@ function showNewConvo() {
 			'</form>' +
 		  '</div>' + 
 		  '<a class="waves-effect waves-light btn">Let\'s Talk!</a>'
+	);
+}
+
+function update(data) {
+	console.log('update');
+	console.log(conversationCount);
+	for (var i = 0; i < data.length; i++) {
+		addMessage(data[i+conversationCount]);
+	}
+	conversationCount = data.length;
+}
+
+function addMessage(data) {
+	console.log('addMessage');
+	console.log(username);
+	if (data.sender === username) {
+		addMessageFromSelf(data.message);
+	} else {
+		addMessageFromOthers(data.message);
+	}
+}
+
+function addMessageFromOthers(message) {
+	$("#messageArea").append('' +
+	    '<div class="row">' +
+		'	<div class="col s7">' +
+		'	  <div class="card-panel deep-orange darken-4">' +
+		'	    <span class="white-text">' +
+					message +
+		'	    </span>' +
+		'	  </div>' +
+		'	</div>' +
+		'</div> '
+	);
+}
+
+function addMessageFromSelf(message) {
+	$("#messageArea").append('' +
+	    '<div class="row">' +
+		'	<div class="col s7 right-align offset-s4">' +
+		'	  <div class="card-panel teal">' +
+		'	    <span class="white-text">' +
+		message +
+		'	    </span>' +
+		'	  </div>' +
+		'	</div>' +
+		'</div> '
 	);
 }
 
