@@ -3,9 +3,9 @@ import json
 from google.appengine.ext import ndb
 
 class Message(ndb.Model):
-    user1 = ndb.StringProperty()
-    user2 = ndb.StringProperty()
-    time = ndb.DateTimeProperty()
+    sender = ndb.StringProperty()
+    receiver = ndb.StringProperty()
+    time = ndb.DateTimeProperty(auto_now_add=True)
     message = ndb.StringProperty()
 
 class Conversation(ndb.Model):
@@ -87,12 +87,30 @@ class ConvoHandler(webapp2.RequestHandler): #returns user data upon login
         else: #if user is not found
             self.response.status = 403
 
+
+class dummyData(webapp2.RequestHandler):
+    def get(self):
+
+        newconvo = Conversation(user1="matt",user2="swag", num_messages=0)
+        user1 = User.query(User.username == "matt").fetch()[0]
+        user2 = User.query(User.username == "swag").fetch()[0]
+
+        for i in range(0,100):
+            message = Message(sender="matt", receiver="swag", message=str(i))
+            newconvo.messages.append(message)
+
+        user1.conversations.append(newconvo.key)
+        user2.conversations.append(newconvo.key)
+
+        newconvo.put()
+
+
 class ConvoCreate(webapp2.RequestHandler):
     def post(self):
         user1 = self.request.get("user")
         user2= "testconverser" #change this
 
-        newconvo = Conversation("user1"=user1, "user2"=user2, num_messages=0)
+        newconvo = Conversation(user1=user1, user2=user2, num_messages=0)
 
         user1 = User.query(User.username == user1).fetch()
         user2 = User.query(User.username == user2).fetch()
@@ -100,11 +118,30 @@ class ConvoCreate(webapp2.RequestHandler):
         user1.conversations.append(newconvo.key) #now add the conversation to the 
         user2.conversations.append(newconvo.key) #conversation list
 
-        
+
+class API(webapp2.RequestHandler):
+    def get(self):
+        convos = Conversation.query().fetch()
+        convodict = {}
+        count = 0
+
+        for convo in convos:
+            convodict[count] = []
+
+            for message in convo.messages:
+                mess = {"sender": message.sender, "message": message.message}
+
+                convodict[count].append(mess)
+
+            count = count + 1
+
+        self.response.out.write(convodict)
 
 
 app = webapp2.WSGIApplication([
     ('/conversation', ConvoHandler),
     ('/register', Register),
-    ('/create', ConvoCreate)
+    ('/create', ConvoCreate),
+    ('/data', dummyData),
+    ('/api', API)
 ], debug=True)
