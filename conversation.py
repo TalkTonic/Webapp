@@ -8,6 +8,7 @@ class User(ndb.Model):
     password = ndb.StringProperty(required=True)
     conversations = ndb.StringProperty(repeated=True)
     date = ndb.DateTimeProperty(auto_now_add=True)
+    interests = ndb.StringProperty(repeated=True)
 
 class Message(ndb.Model):
     user1 = ndb.StringProperty()
@@ -38,7 +39,17 @@ class Register(webapp2.RequestHandler):
         user = User(username="matt", password="lee",conversations=["conv1","conv2"])
         user.put()
 
-   
+    def post(self):
+        username = self.request.get("user")
+        password = self.request.get("pass")
+
+        user = User.query(User.username == username).fetch()
+
+        if user:
+            self.response.write("User Already Exists")
+        else:
+            user = User(username=username, password=password)
+            user.put()
 
 
 class ConvoHandler(webapp2.RequestHandler): #returns user data
