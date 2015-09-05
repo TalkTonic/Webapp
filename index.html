@@ -7,52 +7,58 @@
 	</head>
 	<body>
 		<nav>
-		  <div class="nav-wrapper">
-			<a href="#!" class="brand-logo">Logo</a>
-			<ul class="right hide-on-med-and-down">
-			  <li>          
-				<input placeholder="Username" id="username" type="text" class="validate">
-			  </li>
-			  <li>          
-				<input placeholder="Password" id="password" type="text" class="validate">
-			  </li>
-			  <li>          
-				<a id="submit" class="waves-effect waves-light btn">Stuff</a>
-			  </li>
-			</ul>
-		  </div>
+			<div class="nav-wrapper">
+				<a href="#!" class="brand-logo">Logo</a>
+				<ul class="right hide-on-med-and-down">
+					<li>          
+						<input placeholder="Username" id="username" type="text" class="validate">
+					</li>
+					<li>          
+						<input placeholder="Password" id="password" type="text" class="validate">
+					</li>
+					<li>          
+						<a id="submit" class="waves-effect waves-light btn">Stuff</a>
+					</li>
+				</ul>
+			</div>
 		</nav>
 		<div id="parent" class="row">
 			<div id="info" class="col s7">
 				<h1>Sometimes all you need is a friend</h1>
 			</div>
 			<div id="register" class="col s5">
-			  <div class="row">
-				<form class="col s12">
-				  <div class="row">
-					<div class="input-field col s6">
-					  <input placeholder="Placeholder" id="first_name" type="text" class="validate">
-					  <label for="first_name">First Name</label>
-					</div>
-					<div class="input-field col s6">
-					  <input id="last_name" type="text" class="validate">
-					  <label for="last_name">Last Name</label>
-					</div>
-				  </div>
-				  <div class="row">
-					<div class="input-field col s12">
-					  <input id="password" type="password" class="validate">
-					  <label for="password">Password</label>
-					</div>
-				  </div>
-				</form>
-			  </div>
+				<div class="row">
+					<form class="col s12">
+						<div class="row">
+							<div class="input-field col s6">
+								<input placeholder="Placeholder" id="first_name" type="text" class="validate">
+								<label for="first_name">First Name</label>
+							</div>
+							<div class="input-field col s6">
+								<input id="last_name" type="text" class="validate">
+								<label for="last_name">Last Name</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="input-field col s12">
+								<input id="password" type="password" class="validate">
+								<label for="password">Password</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="input-field col s12">
+								<input id="email" type="email" class="validate">
+								<label for="email">Email</label>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
 		<script>
 			var bodyHeight = window.innerHeight;
 			$('#parent').height(bodyHeight - ($('#parent').position().top));
-
+			
 			$('#submit').click(function() {
 				var username = $('#username').val();
 				var password = $('#password').val();
