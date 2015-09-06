@@ -48,6 +48,7 @@ $('#submit').click(function() {
 			}
 		}
 	});
+	showChat(data);
 });
 
 function showChat(data) {
@@ -63,8 +64,10 @@ function showChat(data) {
 			'</ul>' +
 		'</div>');
 
-	for(var i = 0; i < data.conversations.length; i++) {
-		$("#chat_area").append('<li id="'+data.conversations[i].conversation+'" class="convo-button"><a class="btn-floating blue">'+data.conversations[i].person.substring(0, 2).toUpperCase()+'</a></li>');
+	if (data.conversations !== undefined) {
+		for(var i = 0; i < data.conversations.length; i++) {
+			$("#chat_area").append('<li id="'+data.conversations[i].conversation+'" class="convo-button"><a class="btn-floating blue">'+data.conversations[i].person.substring(0, 2).toUpperCase()+'</a></li>');
+		}
 	}
 	
 	$("#chat_area").append('<li><a id="chat-button" class="btn-floating blue">+</a></li>');
@@ -107,22 +110,24 @@ function showChat(data) {
 						"convoid": currentConvo
 					}
 				});
+				$("#message_body").val('');
 			}
 		});
-	setInterval(function(){
-		$.ajax({
-			url: "/thread",
-			type: "POST", 
-			data: {
-				"convoid": currentConvo
-			},
-			success: function(data){
-				if (conversationCount < data.length) {
-					update(data);
-				}
-			},
-			dataType: "json"});
-	}, 500);
+		var convoLoop = setInterval(function(){
+			$.ajax({
+				url: "/thread",
+				type: "POST", 
+				data: {
+					"convoid": currentConvo
+				},
+				success: function(data){
+					if (conversationCount < data.length) {
+						update(data);
+					}
+				},
+				dataType: "json"
+			});
+		}, 500);
 	});
 
 
@@ -135,14 +140,43 @@ function showNewConvo() {
 			'<form class="col s12">'+
 			  '<div class="row">' +
 				'<div class="input-field col s12">' +
-				  '<textarea id="textarea1" class="materialize-textarea"></textarea>' +
-				  '<label for="textarea1">I want to talk to someone about...</label>' +
+				  '<textarea id="interests" class="materialize-textarea"></textarea>' +
+				  '<label for="interests">I want to talk to someone about...</label>' +
 				'</div>' +
 			  '</div>' +
 			'</form>' +
 		  '</div>' + 
-		  '<a class="waves-effect waves-light btn">Let\'s Talk!</a>'
+		  '<a id="lets_talk" class="waves-effect waves-light btn">Let\'s Talk!</a>'
 	);
+	$("#lets_talk").click(function() {
+		var strings = $("#interests").val().split(" ");
+		$.ajax({
+			url: "/create",
+			type: "POST",
+			data: {
+				"user": username,
+				"interests": strings
+			}
+		})
+		clearPane();
+	});
+
+	var convoConnect = setInterval(function() {
+		$.ajax({
+			url: "/conversation", 
+			type: "POST",
+			data: {
+				'user': user,
+				'pass': pass
+			},
+			success: function(data) {
+				if (data.length > currentConvoCount) {
+					clearInterval(convoConnect);
+					showChat(data);
+				}
+			}
+		});
+	}, 5000);
 }
 
 function update(data) {
@@ -153,17 +187,18 @@ function update(data) {
 }
 
 function addMessage(data) {
-	console.log(data);
 	if (data.sender === username) {
 		addMessageFromSelf(data.message);
 	} else {
 		addMessageFromOthers(data.message);
 	}
+	$("#messageArea").scrollTop($("#messageArea")[0].scrollHeight);
 }
 
+var _id = 0;
 function addMessageFromOthers(message) {
 	$("#messageArea").append('' +
-	    '<div class="row">' +
+	    '<div class="row hidden" id="'+_id+'">' +
 		'	<div class="col s7">' +
 		'	  <div class="card-panel deep-orange darken-4">' +
 		'	    <span class="white-text">' +
@@ -173,11 +208,14 @@ function addMessageFromOthers(message) {
 		'	</div>' +
 		'</div> '
 	);
+
+	$("#"+_id).fadeIn(800);
+	_id += 1;
 }
 
 function addMessageFromSelf(message) {
 	$("#messageArea").append('' +
-	    '<div class="row">' +
+	    '<div class="row hidden" id="'+_id+'">' +
 		'	<div class="col s7 right-align offset-s4">' +
 		'	  <div class="card-panel teal">' +
 		'	    <span class="white-text">' +
@@ -187,8 +225,11 @@ function addMessageFromSelf(message) {
 		'	</div>' +
 		'</div> '
 	);
+	$("#"+_id).fadeIn(800);
+	_id += 1;
 }
 
 function clearPane() {
 	$("#pane").empty();
+	clearInterval(convoLoop);
 }

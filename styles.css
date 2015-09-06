@@ -1,3 +1,7 @@
 #sidebar {
 	background: #494F50;
 }
+
+.hidden {
+	display: none;
+}
