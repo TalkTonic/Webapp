@@ -128,17 +128,17 @@ class createConvos(webapp2.RequestHandler):
     def get(self):
         queue = Queued(waitingusers=[])
 
-        for i in range(0,10):
-            if (i%4 == 0):
-                interests = ["swag"]
-            elif (i%3 == 0):
-                interests = ["poop"]
-            else:
-                interests = ["tacky"]
-            user = User(username=str(i), password="meat", conversations=[], interests=interests)
+        # for i in range(0,10):
+        #     if (i%4 == 0):
+        #         interests = ["swag"]
+        #     elif (i%3 == 0):
+        #         interests = ["poop"]
+        #     else:
+        #         interests = ["tacky"]
+        #     user = User(username=str(i), password="meat", conversations=[], interests=interests)
 
-            user.put()
-            queue.waitingusers.append(user.username)
+        #     user.put()
+        #     queue.waitingusers.append(user.username)
 
 
         queue.put()
