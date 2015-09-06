@@ -141,10 +141,16 @@ function showNewConvo() {
 					'user': username,
 					'pass': password
 				},
-				success: function(data) {
-					if (data.length > currentConvoCount) {
-						clearInterval(convoConnect);
-						showChat(data);
+				statusCode: {
+					202: function(data) {
+						console.log(data);
+						if (data.conversations.length > currentConvoCount) {
+							clearInterval(convoConnect);
+							showChat(data);
+						}
+					},
+					403: function(data) {
+						alert("no");
 					}
 				}
 			});
