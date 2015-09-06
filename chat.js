@@ -2,7 +2,10 @@ var username = "";
 var password = "";
 var conversationList;
 var conversationCount = 0;
+var currentConvoCount = 0;
 var currentConvo = "";
+var convoLoop;
+var convoConnect;
 
 var bodyHeight = window.innerHeight;
 $('#parent').height(bodyHeight - ($('#parent').position().top));
@@ -48,7 +51,6 @@ $('#submit').click(function() {
 			}
 		}
 	});
-	showChat(data);
 });
 
 function showChat(data) {
@@ -69,6 +71,8 @@ function showChat(data) {
 			$("#chat_area").append('<li id="'+data.conversations[i].conversation+'" class="convo-button"><a class="btn-floating blue">'+data.conversations[i].person.substring(0, 2).toUpperCase()+'</a></li>');
 		}
 	}
+	
+	currentConvoCount = data.conversations.length;
 	
 	$("#chat_area").append('<li><a id="chat-button" class="btn-floating blue">+</a></li>');
 
@@ -113,7 +117,7 @@ function showChat(data) {
 				$("#message_body").val('');
 			}
 		});
-		var convoLoop = setInterval(function(){
+		convoLoop = setInterval(function(){
 			$.ajax({
 				url: "/thread",
 				type: "POST", 
@@ -149,7 +153,8 @@ function showNewConvo() {
 		  '<a id="lets_talk" class="waves-effect waves-light btn">Let\'s Talk!</a>'
 	);
 	$("#lets_talk").click(function() {
-		var strings = $("#interests").val().split(" ");
+		var strings = $("#interests").val()
+		console.log(strings);
 		$.ajax({
 			url: "/create",
 			type: "POST",
@@ -161,13 +166,13 @@ function showNewConvo() {
 		clearPane();
 	});
 
-	var convoConnect = setInterval(function() {
+	convoConnect = setInterval(function() {
 		$.ajax({
 			url: "/conversation", 
 			type: "POST",
 			data: {
-				'user': user,
-				'pass': pass
+				'user': username,
+				'pass': password
 			},
 			success: function(data) {
 				if (data.length > currentConvoCount) {
