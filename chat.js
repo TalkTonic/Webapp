@@ -72,7 +72,11 @@ function showChat(data) {
 		}
 	}
 	
-	currentConvoCount = data.conversations.length;
+	if (data.conversations === undefined) {
+		currentConvoCount = 0;
+	} else {
+		currentConvoCount = data.conversations.length;
+	}
 	
 	$("#chat_area").append('<li><a id="chat-button" class="btn-floating blue">+</a></li>');
 
