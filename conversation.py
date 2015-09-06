@@ -165,13 +165,12 @@ class ConvoCreate(webapp2.RequestHandler):
         username = self.request.get("user")
         interests = self.request.get("interests")
 
-        user = User.query(username=username).fetch()[0]
+        user = User.query(User.username=username).fetch()[0]
         user.interests = interests
 
         user.put()        
 
         queue = Queued.query().fetch()[0]
-        queue = queue.waitingusers
         queue.waitingusers.append(username)
 
 class sendMessage(webapp2.RequestHandler):
