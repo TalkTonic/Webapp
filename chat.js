@@ -93,7 +93,6 @@ function setupChatUI() {
 		'</ul>' +
 		'</div>'
 	);
-	$('#button').css('pointer-events', 'none');
 }
 
 function clearConversations() {
@@ -116,7 +115,7 @@ function showNewConvo() {
 	clearPane();
 
 	$("#pane").append('' +
-		'<div class="row">' +
+		'<div id="interests_area" class="row">' +
 		'<form class="col s12">' +
 		'<div class="row">' +
 		'<div class="input-field col s12">' +
@@ -125,8 +124,26 @@ function showNewConvo() {
 		'</div>' +
 		'</div>' +
 		'</form>' +
-		'</div>' +
-		'<a id="lets_talk" class="waves-effect waves-light btn">Let\'s Talk!</a>');
+		'<a id="lets_talk" class="waves-effect waves-light btn">Let\'s Talk!</a>' +
+		'</div>'+
+		'<div class="row">' +
+'      <div class="col s6 offset-s3"> ' +
+'        <div class="card-panel white"> ' +
+'          <h3 class="center-align">Start a conversation</h3>'+
+				'<p class="center-align">We will try to match you with someone that shares your interests, but you can talk about anything you want.' +
+	'          </p> ' +
+'        </div> ' +
+'      </div> ' +
+'    </div>'
+            
+	);
+
+	$('#interests_area').css('margin', '100px');
+	$('#lets_talk').css('text-align', 'center');
+	$('#lets_talk').css('margin-left', '40%');
+	$('#lets_talk').css('margin-right', '40%');
+	$('#lets_talk').css('display', 'inline-block');
+
 
 	$("#lets_talk").click(function() {
 		var strings = $("#interests").val()
@@ -239,12 +256,15 @@ function setupMessageRoom() {
 			.height(window.innerHeight * 0.1));
 
 	$("#textArea").append('' +
-		' <div class="row"> ' +
-		'   <div class="input-field col s6"> ' +
+		' <div id="write_area" class="row"> ' +
+		'   <div class="input-field col s10"> ' +
 		'     <input id="message_body" type="text" class="validate"> ' +
-		'     <label class="active" for="message_body">Press Enter to send</label> ' +
+		'     <label id="label_message_body" class="active" for="message_body">Press Enter to send</label> ' +
 		'   </div> ' +
 		' </div> ');
+	
+	$("#message_body").css('margin-top', '15px');
+	$("#label_message_body").css('margin-top', '15px');
 }
 
 function update(data) {
@@ -267,10 +287,10 @@ var _id = 0;
 
 function addMessageFromOthers(message) {
 	$("#messageArea").append('' +
-		'<div class="row hidden" id="' + _id + '">' +
-		'	<div class="col s7">' +
+		'<div class=" message row hidden" id="' + _id + '">' +
+		'	<div class="col s5">' +
 		'	  <div class="card-panel green lighten-2">' +
-		'	    <span class="white-text">' + message +
+		'	    <span class="message white-text">' + message +
 		'	    </span>' +
 		'	  </div>' +
 		'	</div>' +
@@ -282,8 +302,8 @@ function addMessageFromOthers(message) {
 
 function addMessageFromSelf(message) {
 	$("#messageArea").append('' +
-		'<div class="row hidden" id="' + _id + '">' +
-		'	<div class="col s7 right-align offset-s4">' +
+		'<div class="message row hidden" id="' + _id + '">' +
+		'	<div class="col s5 right-align offset-s7">' +
 		'	  <div class="card-panel light-blue lighten-3">' +
 		'	    <span class="white-text">' + message +
 		'	    </span>' +

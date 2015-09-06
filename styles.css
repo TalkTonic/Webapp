@@ -89,3 +89,15 @@ nav{
 #textArea {
 	background: #4d283d;
 }
+
+.message {
+	font-size: 20px;
+}
+
+#pane {
+	overflow: hidden;
+}
+
+#write_area {
+	background: #333;
+}
