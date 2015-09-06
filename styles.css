@@ -5,3 +5,20 @@
 .hidden {
 	display: none;
 }
+
+.brand-logo {
+	margin-left: 20px;
+}
+
+.nav-wrapper li {
+	height: 100%;
+}
+
+#login {
+	margin-right: 20px;
+}
+
+.login-auth {
+	margin-left: 20px;
+	margin-right: 20px;
+}
