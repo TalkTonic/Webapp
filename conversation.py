@@ -165,7 +165,7 @@ class ConvoCreate(webapp2.RequestHandler):
         username = self.request.get("user")
         interests = self.request.get("interests")
 
-        user = User.query(User.username=username).fetch()[0]
+        user = User.query(User.username==username).fetch()[0]
         user.interests = interests
 
         user.put()        
