@@ -153,8 +153,8 @@ function showNewConvo() {
 		  '<a id="lets_talk" class="waves-effect waves-light btn">Let\'s Talk!</a>'
 	);
 	$("#lets_talk").click(function() {
+		console.log('clicked');
 		var strings = $("#interests").val()
-		console.log(strings);
 		$.ajax({
 			url: "/create",
 			type: "POST",
@@ -164,24 +164,25 @@ function showNewConvo() {
 			}
 		})
 		clearPane();
-	});
 
-	convoConnect = setInterval(function() {
-		$.ajax({
-			url: "/conversation", 
-			type: "POST",
-			data: {
-				'user': username,
-				'pass': password
-			},
-			success: function(data) {
-				if (data.length > currentConvoCount) {
-					clearInterval(convoConnect);
-					showChat(data);
+		convoConnect = setInterval(function() {
+			console.log('loop');
+			$.ajax({
+				url: "/conversation", 
+				type: "POST",
+				data: {
+					'user': username,
+					'pass': password
+				},
+				success: function(data) {
+					if (data.length > currentConvoCount) {
+						clearInterval(convoConnect);
+						showChat(data);
+					}
 				}
-			}
-		});
-	}, 5000);
+			});
+		}, 5000);
+	});
 }
 
 function update(data) {
