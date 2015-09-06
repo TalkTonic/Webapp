@@ -15,7 +15,6 @@ class Conversation(ndb.Model):
     num_messages = ndb.IntegerProperty()
     commoninterests = ndb.StringProperty(repeated=True)
 
-
 class User(ndb.Model):
     """Models an individual Guestbook entry with content and date."""
     username = ndb.StringProperty(required=True)
@@ -27,8 +26,6 @@ class User(ndb.Model):
 
 class Queued(ndb.Model):
     waitingusers = ndb.StringProperty(repeated=True) #list of user strings
-
-
 
 class Register(webapp2.RequestHandler):
     def post(self):
@@ -234,7 +231,6 @@ class Match(webapp2.RequestHandler): #simple matching algorithm
             userpool.append(User.query(User.username==user).fetch()[0])
 
 
-
         unmatched = []
 
         for user in userpool: #now match them suboptimally 
@@ -250,7 +246,6 @@ class Match(webapp2.RequestHandler): #simple matching algorithm
                     newconvo = Conversation(user1=user.username, user2=potmatch.username, num_messages=0, commoninterests=common)
                     newconvo = newconvo.put()
                     convoid = newconvo.urlsafe()
-                    
 
                     user.conversations.append(convoid)
                     potmatch.conversations.append(convoid)
@@ -270,7 +265,6 @@ class Match(webapp2.RequestHandler): #simple matching algorithm
                     break
             if matched == False:
                 unmatched.append(user)
-
 
         for i in xrange(0,len(unmatched),2): #match all the losers with no interests
             if len(unmatched) == 1:
@@ -295,7 +289,8 @@ class Match(webapp2.RequestHandler): #simple matching algorithm
 
             pool.put()
 
-
+            del unmatched[i]
+            del unmatched[i+1]
 
 
 
