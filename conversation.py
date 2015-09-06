@@ -26,7 +26,7 @@ class User(ndb.Model):
 
 
 class Queued(ndb.Model):
-    waitingusers = ndb.StringProperty(required=True)
+    waitingusers = ndb.StringProperty(repeated=True) #list of user strings
 
 
 
@@ -40,7 +40,7 @@ class Register(webapp2.RequestHandler):
         if user:
             self.response.status = 400
         else:
-            user = User(username=username, password=password)
+            user = User(username=username, password=password, conversations=[])
             user.put()
 
             self.response.write(json.dumps({"conversations": []}))
@@ -87,24 +87,6 @@ class ConvoHandler(webapp2.RequestHandler): #returns user data upon login
         else: #if user is not found
             self.response.status = 403
 
-
-
-# class openConversation(webapp2.RequestHandler):
-#     convos = Conversation.query().fetch()
-#     convodict = {}
-#     count = 9999
-
-#     for convo in convos:
-#         convodict[count] = []
-
-#         for message in convo.messages:
-#             mess = {"sender": message.sender, "message": message.message}
-
-#             convodict[count].append(mess)
-
-#         count = count + 1
-
-#     self.response.out.write(json.dumps(convodict))
 
 class dummyData(webapp2.RequestHandler):
     def get(self):
@@ -161,19 +143,17 @@ class returnConvo(webapp2.RequestHandler): #returns the messages of the conversa
 
 class ConvoCreate(webapp2.RequestHandler):
     def post(self):
-        username1 = self.request.get("user1")
-        username2= self.request.get("user2") #change this
+        username = self.request.get("user")
+        interests = self.request.get("interests")
 
+        user = User.query(username=username).fetch()[0]
+        user.interests = interests
 
-        user1 = User.query(User.username == user1).fetch()[0]
-        user2 = User.query(User.username == user2).fetch()[0]
+        user.put()        
 
-
-
-        newconvo = Conversation(user1=username1, user2=username2, num_messages=0)
-
-        user1.conversations.append(newconvo.key) #now add the conversation to the 
-        user2.conversations.append(newconvo.key) #conversation list
+        queue = Queued.query().fetch()[0]
+        queue = queue.waitingusers
+        queue.waitingusers.append(username)
 
 class sendMessage(webapp2.RequestHandler):
      def post(self):
@@ -196,6 +176,8 @@ class sendMessage(webapp2.RequestHandler):
 
 
 
+
+
 class API(webapp2.RequestHandler):
     def get(self):
         convos = Conversation.query().fetch()
@@ -214,13 +196,73 @@ class API(webapp2.RequestHandler):
         self.response.out.write(json.dumps(convodict))
         self.response.status = 202
 
-class Match(webapp2.RequestHandler):
+class Match(webapp2.RequestHandler): #simple matching algorithm 
     def get(self):
-        pool = Queued.query().fetch()
+        pool = Queued.query().fetch()[0]
+        pool = pool.waitingusers
 
-        for user in pool: #now match them optimally 
-            user 
+        userpool =[]
 
+        for user in pool:
+            userpool.append(Users.query(username=user).fetch()[0])
+
+
+
+        unmatched = []
+
+        for user in userpool: #now match them suboptimally 
+            interests = user.interests
+            userpool.remove(user)
+            matched = False
+
+            for potmatch in userpool:
+                potinterests = potmatch.interests
+                common = list(set(interests).intersection(potinterests))
+                if len(common) > 0:
+                    userpool.remove(potmatch)
+                    newconvo = Conversation(user1=user.username, user2=potmatch.username, num_messages=0, commoninterests=common)
+                    newconvo = newconvo.put()
+                    convoid = newconvo.urlsafe()
+                    
+
+                    user.conversations.append(convoid)
+                    potmatch.conversations.append(convoid)
+
+                    user.put()
+                    potmatch.put()
+
+                    matched = True
+
+
+                    del pool.waitingusers[user.username]
+                    del pool.waitingusers[potmatch.username]
+                    pool.put()
+
+                    break
+            if matched == False:
+                unmatched.append(user)
+
+
+        for i in xrange(0,len(unmatched),2): #match all the losers with no interests
+            if len(unmatched) == 1:
+                return
+
+            newconvo = Conversation(user1=unmatched[i].username, user2=unmatched[i+1].username,
+            num_messages=0, commoninterests=common)
+                    
+            newconvo = newconvo.put()
+            convoid = newconvo.urlsafe()
+            
+           
+            unmatched[i].conversations.append(convoid)
+            unmatched[i+1].conversations.append(convoid)
+            unmatched[i].put()
+            unmatched[i+1.put()
+
+            del pool.waitingusers[unmatched[i].username]
+            del pool.waitingusers[unmatched[i+1].username]
+
+            pool.put()
 
 
 
