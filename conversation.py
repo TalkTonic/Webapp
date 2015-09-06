@@ -290,9 +290,9 @@ class Match(webapp2.RequestHandler): #simple matching algorithm
             pool.waitingusers.remove(unmatched[i+1].username)
 
             pool.put()
-
-            del unmatched[i]
             del unmatched[i+1]
+            del unmatched[i]
+            
 
 
 
