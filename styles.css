@@ -3,10 +3,14 @@
 }
 
 body{
-	background: #2d283d;
+	background: #F5F3EE;
 }
 nav{
-	background: #2bbbad;
+	background: #2d283d;
+}
+
+.brand-logo{
+	font-color: #ffce80;
 }
 
 .hidden {
