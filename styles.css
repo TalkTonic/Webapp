@@ -2,6 +2,13 @@
 	background: #494F50;
 }
 
+body{
+	background: #2d283d;
+}
+nav{
+	background: #2bbbad;
+}
+
 .hidden {
 	display: none;
 }
