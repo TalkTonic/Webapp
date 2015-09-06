@@ -192,6 +192,7 @@ function selectConversation(conversation) {
 				success: function(data) {
 					if (conversationCount < data.length) {
 						update(data);
+						selectConversation(data.conversations[0]);
 					}
 				},
 				dataType: "json"
