@@ -10,7 +10,7 @@
 	<body>
 		<nav>
 			<div class="nav-wrapper">
-				<a href="#!" class="brand-logo">Talk Tonic</a>
+				<a href="#!" id="brandlogo" class="brand-logo">Talk Tonic</a>
 				<ul class="right hide-on-med-and-down">
 					<li class="login-auth">          
 						<input placeholder="Username" id="login_username" type="text" class="validate">
@@ -24,15 +24,21 @@
 				</ul>
 			</div>
 		</nav>
+		<div class = "container">
 		<div id="parent" class="row">
-			<div id="info" class="col s7">
-				<div>
-					<h1>Sometimes all you need is a friend</h1>
-				</div>
+			<div id="info" class="col s6">
+					<h1 id="catchline" class="center-align">Sometimes all you need is a friend</h1>
+				<!--	<div class="row"> 
+						<div class="col s6">
+						<img src="alchemylogo.png" id="sponsor1">
+						</div>
+					</div>!-->
 			</div>
-			<div id="register_section" class="col s5">
-				<div class="row">
-					<form class="col s12">
+
+			<div id="register_section" class="col s4 offset-s2">
+			<p class="center-align" id="registertext">hi</p>
+			<div class="card" id="inputcard">
+				<form class="col s12">
 						<div class="row">
 							<div class="input-field col s12">
 								<input id="register_username" type="email" class="validate">
@@ -56,6 +62,17 @@
 				</div>
 			</div>
 		</div>
+		<div class="row">
+		<div class="col s1">
+			<img src="alchemylogo.png" id="sponsor1">
+		</div>
+		<div class="col s1 offset-s1">
+		<img src="googlelogo.jpg" id ="sponsor2">
+		</div>
+		</div>
+		</div>
 		<script src="chat.js"></script>
+		
 	</body>
+	    
 </html>

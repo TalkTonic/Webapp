@@ -1,17 +1,57 @@
+
 #sidebar {
 	background: #494F50;
 }
 
-body{
-	background: #F5F3EE;
+#brandlogo{
+	color: white;
+	font-size: 12;
 }
-nav{
+
+#inputcard{
+	background: #e1f5fe;
+}
+
+#register{
 	background: #2d283d;
 }
 
-.brand-logo{
-	font-color: #ffce80;
+#registertext{
+	color: #ffce80;
+	font-size: 24;
 }
+
+body{
+	background: #2d283d;
+}
+nav{
+
+	background: rgb(219, 235, 252);
+
+}
+
+#catchline{
+	color: #ffce80;
+	font-size: 30;
+	font-weight: 200;
+
+}
+
+#sponsor1{
+    position: fixed;
+    bottom: 5px;
+    max-width:6%;
+    max-height: 8%;
+}
+
+#sponsor2{
+	position: fixed;
+	bottom: 8px;
+    max-width: 9%;
+    max-height: 10%;
+}
+
+
 
 .hidden {
 	display: none;
@@ -39,7 +79,7 @@ nav{
 }
 
 #register_section {
-	margin-top: 200px;
+	margin-top: 100px;
 	height: 100%;
 }
 

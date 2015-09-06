@@ -10,11 +10,20 @@ handlers:
 - url: /
   static_files: index.html
   upload: index.html
+- url: /googlelogo.jpg
+  static_files: googlelogo.jpg
+  upload: googlelogo.jpg
+- url: /alchemylogo.png
+  static_files: alchemylogo.png
+  upload: alchemylogo.png
 - url: /styles.css
   static_files: styles.css
   upload: styles.css
 - url: /chat.js
   static_files: chat.js
   upload: chat.js
+- url: /people.png
+  static_files: people.png
+  upload: people.png
 - url: /(.*)
   script: conversation.app
