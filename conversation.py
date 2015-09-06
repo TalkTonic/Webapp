@@ -174,6 +174,8 @@ class ConvoCreate(webapp2.RequestHandler):
         queue = Queued.query().fetch()[0]
         queue.waitingusers.append(username)
 
+        queue.put()
+
 class sendMessage(webapp2.RequestHandler):
      def post(self):
         message = self.request.get("message")
