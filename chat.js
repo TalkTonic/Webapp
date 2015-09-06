@@ -212,7 +212,8 @@ function setupMessageRoom() {
 		$('<div>')
 			.attr('id', 'messageArea')
 			.height(window.innerHeight * 0.9)
-			.css('overflow', 'scroll'));
+			.css('overflow', 'scroll')
+			.css('overflow-x', 'hidden'));
 
 	$("#pane").append(
 		$('<div>')
@@ -223,7 +224,7 @@ function setupMessageRoom() {
 		' <div class="row"> ' +
 		'   <div class="input-field col s6"> ' +
 		'     <input id="message_body" type="text" class="validate"> ' +
-		'     <label class="active" for="message_body">First Name</label> ' +
+		'     <label class="active" for="message_body">Press Enter to send</label> ' +
 		'   </div> ' +
 		' </div> ');
 }
