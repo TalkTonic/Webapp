@@ -22,3 +22,12 @@
 	margin-left: 20px;
 	margin-right: 20px;
 }
+
+#info {
+	height: 100%;
+}
+
+#register_section {
+	margin-top: 200px;
+	height: 100%;
+}
