@@ -127,6 +127,11 @@ class dummyData(webapp2.RequestHandler):
         user1.put()
         user2.put()
 
+class createConvos(webapp2.RequestHandler):
+    def get(self):
+        for i in range(0,10):
+            user = User(username=str(i), password=meat, )
+
 class returnConvo(webapp2.RequestHandler): #returns the messages of the conversation
     def post(self):
 
@@ -257,7 +262,7 @@ class Match(webapp2.RequestHandler): #simple matching algorithm
             unmatched[i].conversations.append(convoid)
             unmatched[i+1].conversations.append(convoid)
             unmatched[i].put()
-            unmatched[i+1.put()
+            unmatched[i+1].put()
 
             del pool.waitingusers[unmatched[i].username]
             del pool.waitingusers[unmatched[i+1].username]
