@@ -13,7 +13,7 @@ class Conversation(ndb.Model):
     user1 = ndb.StringProperty()
     user2 = ndb.StringProperty()
     num_messages = ndb.IntegerProperty()
-    commoninterests = ndb.StringProperty()
+    commoninterests = ndb.StringProperty(repeated=True)
 
 
 class User(ndb.Model):
@@ -129,8 +129,25 @@ class dummyData(webapp2.RequestHandler):
 
 class createConvos(webapp2.RequestHandler):
     def get(self):
+        queue = Queued(waitingusers=[])
+
         for i in range(0,10):
-            user = User(username=str(i), password=meat, )
+            if (i%4 == 0):
+                interests = ["swag"]
+            elif (i%3 == 0):
+                interests = ["poop"]
+            else:
+                interests = ["tacky"]
+            user = User(username=str(i), password="meat", conversations=[], interests=interests)
+
+            user.put()
+            queue.waitingusers.append(user.username)
+
+
+        queue.put()
+
+
+
 
 class returnConvo(webapp2.RequestHandler): #returns the messages of the conversation
     def post(self):
@@ -203,13 +220,18 @@ class API(webapp2.RequestHandler):
 
 class Match(webapp2.RequestHandler): #simple matching algorithm 
     def get(self):
-        pool = Queued.query().fetch()[0]
+        pool = Queued.query().fetch()
+        if pool:
+            pool = pool[0]
+        else:
+            return
+
         pool = pool.waitingusers
 
         userpool =[]
 
         for user in pool:
-            userpool.append(Users.query(username=user).fetch()[0])
+            userpool.append(User.query(User.username==user).fetch()[0])
 
 
 
@@ -238,9 +260,11 @@ class Match(webapp2.RequestHandler): #simple matching algorithm
 
                     matched = True
 
+                    pool = Queued.query().fetch()[0]
 
-                    del pool.waitingusers[user.username]
-                    del pool.waitingusers[potmatch.username]
+                    pool.waitingusers.remove(user.username)
+                    pool.waitingusers.remove(potmatch.username)
+
                     pool.put()
 
                     break
@@ -264,8 +288,10 @@ class Match(webapp2.RequestHandler): #simple matching algorithm
             unmatched[i].put()
             unmatched[i+1].put()
 
-            del pool.waitingusers[unmatched[i].username]
-            del pool.waitingusers[unmatched[i+1].username]
+            pool = Queued.query().fetch()[0]
+
+            pool.waitingusers.remove(unmatched[i].username)
+            pool.waitingusers.remove(unmatched[i+1].username)
 
             pool.put()
 
@@ -281,5 +307,6 @@ app = webapp2.WSGIApplication([
     ('/create', ConvoCreate),
     ('/data', dummyData),
     ('/api', API),
-    ('/matchpeople', Match)
+    ('/matchpeople', Match),
+    ('/convtest', createConvos)
 ], debug=True)
