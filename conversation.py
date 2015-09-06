@@ -164,6 +164,7 @@ class ConvoCreate(webapp2.RequestHandler):
     def post(self):
         username = self.request.get("user")
         interests = self.request.get("interests")
+        interests = interests.split(" ")
 
         user = User.query(User.username==username).fetch()[0]
         user.interests = interests
