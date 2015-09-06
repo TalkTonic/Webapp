@@ -1,4 +1,4 @@
 cron:
-- description: daily summary job
+- description: match
   url: /matchpeople
-  schedule: every 30 secs
+  schedule: every 1 mins

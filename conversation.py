@@ -154,8 +154,6 @@ class returnConvo(webapp2.RequestHandler): #returns the messages of the conversa
 
         thread = []
 
-        thread.append({"interests": convo_object.interests})
-
         for message in convo_object.messages:
             thread.append({"sender": message.sender, "message": message.message})
 
@@ -203,7 +201,6 @@ class API(webapp2.RequestHandler):
         convos = Conversation.query().fetch()
         convodict = {}
         count = 0
-
         for convo in convos:
             convodict[count] = []
 
@@ -219,7 +216,14 @@ class API(webapp2.RequestHandler):
 
 class Match(webapp2.RequestHandler):
     def get(self):
-        self.response.write("hey")
+        pool = Queued.query().fetch()
+
+        for user in pool: #now match them optimally 
+            user 
+
+
+
+
 
 
 app = webapp2.WSGIApplication([
