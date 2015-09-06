@@ -75,7 +75,6 @@ function showChat(data) {
 
 	$('.convo-button').click(function() {
 		 currentConvo = this.id;
-		 console.log(currentConvo);
 		 clearPane();
 		 $("#pane").append(
 				$('<div>')
@@ -89,17 +88,27 @@ function showChat(data) {
 					.height(window.innerHeight*0.1)
 		);
 		$("#textArea").append(''+
-'  <div class="row"> ' +
-'    <form class="col s12"> ' +
-'      <div class="row"> ' +
-'        <div class="input-field col s12"> ' +
-'          <textarea id="textarea1" class="materialize-textarea"></textarea> ' +
-'          <label for="textarea1">Press Enter to send</label> ' +
-'        </div> ' +
-'      </div> ' +
-'    </form> ' +
-'  </div> '
+ ' <div class="row"> ' +
+ '   <div class="input-field col s6"> ' +
+ '     <input id="message_body" type="text" class="validate"> ' +
+ '     <label class="active" for="message_body">First Name</label> ' +
+ '   </div> ' +
+ ' </div> '
 		);
+
+		$("#message_body").keydown(function(e) {
+			if (e.keyCode == 13) {
+				$.ajax({
+					url: "/send",
+					type: "POST", 
+					data: {
+						"message": $("#message_body").val(),
+						"sender": username,
+						"convoid": currentConvo
+					}
+				});
+			}
+		});
 	setInterval(function(){
 		$.ajax({
 			url: "/thread",
@@ -137,17 +146,14 @@ function showNewConvo() {
 }
 
 function update(data) {
-	console.log('update');
-	console.log(conversationCount);
-	for (var i = 0; i < data.length; i++) {
+	for (var i = 0; i < data.length - conversationCount; i++) {
 		addMessage(data[i+conversationCount]);
 	}
 	conversationCount = data.length;
 }
 
 function addMessage(data) {
-	console.log('addMessage');
-	console.log(username);
+	console.log(data);
 	if (data.sender === username) {
 		addMessageFromSelf(data.message);
 	} else {
