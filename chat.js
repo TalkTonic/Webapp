@@ -60,6 +60,7 @@ $('#submit').click(function() {
 
 function showChat(data) {
 	setupChatUI();
+	clearConversations();
 
 	if (data.conversations === undefined) {
 		showNewConvo();
@@ -86,17 +87,23 @@ function setupChatUI() {
 
 	//add that button
 	$("body").append('' +
-		'<div class="fixed-action-btn" style="bottom: 45px; right: 24px;">' +
+		'<div class="fixed-action-btn" id="button" style="bottom: 45px; right: 24px;">' +
 		'<a class="btn-floating btn-large red"><i class="large material-icons">chat</i></a>' +
 		'<ul id="chat_area">' +
 		'</ul>' +
 		'</div>'
 	);
+	$('#button').css('pointer-events', 'none');
+}
+
+function clearConversations() {
+	$("#chat_area").empty();
 }
 
 function showConversations(data) {
 	for (var i = 0; i < data.conversations.length; i++) {
-		$("#chat_area").append('<li id="' + data.conversations[i].conversation + '" class="convo"><a class="btn-floating blue">' + data.conversations[i].person.substring(0, 2).toUpperCase() + '</a></li>');
+		$("#chat_area").append('<li id="' + data.conversations[i].conversation + '" class="convo"><a class="btn-floating blue nohover">' + data.conversations[i].person.substring(0, 2).toUpperCase() + '</a></li>');
+		
 	}
 }
 
@@ -143,10 +150,13 @@ function showNewConvo() {
 				},
 				statusCode: {
 					202: function(data) {
-						console.log(data);
 						if (data.conversations.length > currentConvoCount) {
+							console.log(data);
 							clearInterval(convoConnect);
-							showChat(data);
+							clearConversations();
+							showConversations(data);
+							addNewConvoButton();
+							selectConversation(data.conversations[0].conversation);
 						}
 					},
 					403: function(data) {
@@ -164,10 +174,11 @@ function addNewConvoButton() {
 	$("#new_convo").click(function() {
 		showNewConvo();
 	});
+
+	$('.fixed-action-btn').openFAB();
 }
 
 function selectConversation(conversation) {
-	console.log(conversation);
 	if (currentConvo !== conversation) {
 		conversationCount = 0;
 		currentConvo = conversation;
@@ -258,7 +269,7 @@ function addMessageFromOthers(message) {
 	$("#messageArea").append('' +
 		'<div class="row hidden" id="' + _id + '">' +
 		'	<div class="col s7">' +
-		'	  <div class="card-panel deep-orange darken-4">' +
+		'	  <div class="card-panel green lighten-2">' +
 		'	    <span class="white-text">' + message +
 		'	    </span>' +
 		'	  </div>' +
@@ -273,7 +284,7 @@ function addMessageFromSelf(message) {
 	$("#messageArea").append('' +
 		'<div class="row hidden" id="' + _id + '">' +
 		'	<div class="col s7 right-align offset-s4">' +
-		'	  <div class="card-panel teal">' +
+		'	  <div class="card-panel light-blue lighten-3">' +
 		'	    <span class="white-text">' + message +
 		'	    </span>' +
 		'	  </div>' +

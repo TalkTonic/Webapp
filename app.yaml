@@ -19,6 +19,12 @@ handlers:
 - url: /styles.css
   static_files: styles.css
   upload: styles.css
+- url: /materialize.js
+  static_files: materialize.js
+  upload: materialize.js
+- url: /materialize.css
+  static_files: materialize.css
+  upload: materialize.css
 - url: /chat.js
   static_files: chat.js
   upload: chat.js
