@@ -268,6 +268,9 @@ class Match(webapp2.RequestHandler): #simple matching algorithm
             if matched == False:
                 unmatched.append(user)
 
+        for user in userpool:
+            unmatched.append(user)
+
         for i in xrange(0,len(unmatched),2): #match all the losers with no interests
             if len(unmatched) == 1:
                 return
